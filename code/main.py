@@ -7,7 +7,9 @@ from entities import Player, Character
 from groups import AllSprites
 from support import *
 from game_data import *
-from dialog import DialogTree
+from dialog import *
+
+from llm_chat import get_npc_response, TextInputBox
 
 class Game:
     def __init__(self):
@@ -29,6 +31,16 @@ class Game:
         self.tint_progress = 0
         self.tint_direction = -1
         self.tint_speed = 600
+        
+        self.command_menu = None
+        self.command_target = None 
+        
+        # llm dialog
+        self.text_input_box = None
+        self.character_for_llm = None
+        self.awaiting_llm_input = False
+        
+        self.in_conversation = False
         
         self.import_assets()
         self.setup(self.tmx_maps['world'], 'house')
@@ -103,6 +115,7 @@ class Game:
                         groups = self.all_sprites,
                         facing_direction = obj.properties['direction'],
                         collision_sprites = self.collision_sprites)
+                    self.player.game = self
             else:
                 Character(
                     pos = (obj.x, obj.y), 
@@ -116,23 +129,71 @@ class Game:
                     radius = obj.properties['radius'])
     
     def input(self):
-        if not self.dialog_tree:
+    # Block all overlapping interaction
+        if self.awaiting_llm_input or self.in_conversation:
+            return
+        
+        if not self.dialog_tree and not self.in_conversation and not self.awaiting_llm_input:
             keys = pygame.key.get_just_pressed()
             if keys[pygame.K_SPACE]:
                 for character in self.character_sprites:
                     if check_connections(100, self.player, character):
+                        print("[DEBUG] Connected to NPC:", character.character_data)
                         self.player.block()
                         character.change_facing_direction(self.player.rect.center)
-                        self.create_dialog(character)
-                        character.can_rotate = False
-    
+
+                    
+                        self.command_menu = CommandMenu(100, 550, self.fonts['dialog'], ['Talk'])
+                        self.command_target = character
+
     def create_dialog(self, character):
         if not self.dialog_tree:
             self.dialog_tree = DialogTree(character, self.player, self.all_sprites, self.fonts['dialog'], self.end_dialog)
     
     def end_dialog(self, character):
-        self.dialog_tree = None
+        self.clear_dialog_sprite()
+        self.reset_dialog_state()
         self.player.unblock()
+
+    def clear_dialog_sprite(self):
+        if self.dialog_tree and self.dialog_tree.current_dialog:
+            self.dialog_tree.current_dialog.kill()
+        self.dialog_tree = None
+    
+    def reset_dialog_state(self):
+        self.character_for_llm = None
+        self.in_conversation = False
+        self.awaiting_llm_input = False
+        self.text_input_box = None
+        self.command_menu = None
+    
+    def handle_llm_input(self, text):
+        print(f"[DEBUG] TextInputBox result: {text}")
+        self.awaiting_llm_input = False
+        self.text_input_box = None
+        self.player.block()
+
+        npc_name = self.character_for_llm.character_data.get("name", "NPC")
+        response = get_npc_response(text, character_name=npc_name)
+
+        self.dialog_tree = DialogTree(
+            character=self.character_for_llm,
+            player=self.player,
+            all_sprites=self.all_sprites,
+            font=self.fonts['dialog'],
+            end_dialog=self.no_op_end_dialog
+        )
+        pages = self.dialog_tree.paginate_text(response)
+        self.dialog_tree.dialog = pages
+        self.dialog_tree.dialog_index = 0
+        self.dialog_tree.dialog_num = len(pages)
+
+        self.dialog_tree.current_dialog = DialogSprite(
+            pages[0], self.character_for_llm, self.all_sprites, self.fonts['dialog']
+        )
+        
+    def no_op_end_dialog(self, character):
+        pass
     
     def transition_check(self):
         sprites = [sprite for sprite in self.transition_sprites if sprite.rect.colliderect(self.player.hitbox)]
@@ -160,24 +221,57 @@ class Game:
         while True:
             dt = self.clock.tick() / 1000
             self.display_surface.fill('black')
+            skip_frame = False
+
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     exit()
-            
-            # game logic
+
+                if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+                    if self.awaiting_llm_input or self.in_conversation or self.dialog_tree:
+                        print("[DEBUG] ESC pressed — exiting conversation")
+                        self.end_dialog(self.character_for_llm)
+                        skip_frame = True
+                        continue
+
+                if self.command_menu:
+                    result = self.command_menu.handle_event(event)
+                    if result == "Talk":
+                        print("[DEBUG] Talk command selected")
+                        self.in_conversation = True
+                        self.command_menu = None
+                        self.character_for_llm = self.command_target
+                        self.text_input_box = TextInputBox(100, 650, 1080, 40, self.fonts['dialog'])
+                        self.awaiting_llm_input = True
+                    continue
+
+                if self.awaiting_llm_input and self.text_input_box:
+                    result = self.text_input_box.handle_event(event)
+                    if result is not None:
+                        self.handle_llm_input(result)
+
+            if skip_frame:
+                continue
+
             self.input()
             self.transition_check()
             self.all_sprites.update(dt)
-            
-            # draw
+
             self.all_sprites.draw(self.player)
-            
-            # overlay
-            if self.dialog_tree: self.dialog_tree.update()
-            
+            if self.command_menu:
+                self.command_menu.draw(self.display_surface)
+            if self.awaiting_llm_input and self.text_input_box:
+                self.text_input_box.draw(self.display_surface)
+            if self.dialog_tree:
+                self.dialog_tree.update()
+
             self.tint_screen(dt)
             pygame.display.update()
+
+if __name__ == '__main__':
+    game = Game()
+    game.run()
 
 if __name__ == '__main__':
     game = Game()

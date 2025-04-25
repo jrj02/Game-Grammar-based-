@@ -3,6 +3,9 @@ from support import check_connections
 from timer import Timer
 from random import choice
 
+from llm_chat import TextInputBox
+
+
 class Entity(pygame.sprite.Sprite):
     def __init__(self, pos, frames, groups, facing_direction):
         super().__init__(groups)
@@ -76,9 +79,8 @@ class Character(Entity):
         if self.can_rotate:
             self.facing_direction = choice(self.view_directions)
         
-        
     def get_dialog(self):
-        return self.character_data['dialog'][f'{'defeated' if self.character_data['defeated'] else 'default'}']
+        return []#self.character_data['dialog'][f'{'defeated' if self.character_data['defeated'] else 'default'}']
     
     def raycast(self):
         if check_connections(self.radius, self, self.player) and self.has_los and not self.has_moved and not self.has_noticed:
@@ -105,15 +107,23 @@ class Character(Entity):
                 self.hitbox.center = self.rect.center
             else:
                 self.direction = vector()
-                self.has_moved = True
-                self.create_dialog(self)
+                #self.has_moved = True
+                #self.create_dialog(self)
+                self.player.game.character_for_llm = self
+                self.player.game.text_input_box = TextInputBox(100, 650, 1080, 40, self.player.game.fonts['dialog'])
+                self.player.game.awaiting_llm_input = True
                 self.player.noticed = False
         
     def update(self, dt):
+        if self.player.game.character_for_llm == self:
+            self.animate(dt)  # Optional: still idle animate
+            return
+
         for timer in self.timers.values():
             timer.update()
-        
+
         self.animate(dt)
+
         if self.character_data['look_around']:
             self.raycast()
             self.move(dt)
