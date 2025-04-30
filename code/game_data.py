@@ -7,17 +7,20 @@ TRAINER_DATA = {
 		'directions': ['down'],
 		'look_around': True,
 		'defeated': False,
-		'biome': 'forest'
+		'biome': 'forest',
+  		'prompt': "You are a timid, but helpful person who enjoys meeting new people. However, you can get hostile if someone starts saying hurtful things to you."
 		},
 	'o2': {
 		'monsters': {0: ('Atrox', 14), 1: ('Pouch', 15), 2: ('Draem', 13), 3: ('Cindrill', 13)},
 		'dialog': {
-			'default': ['I don\'t like sand', 'It\'s coarse and rough', 'oh god, fight'], 
-			'defeated': ['May the force be with you']},
+			# 'default': ['I don\'t like sand', 'It\'s coarse and rough', 'oh god, fight'], 
+			# 'defeated': ['May the force be with you']
+   			},
 		'directions': ['left', 'down'],
 		'look_around': False,
 		'defeated': False,
-		'biome': 'sand'
+		'biome': 'sand',
+		'prompt': "You are an aggressive, no-nonsense desert warrior who dislikes small talk."
 		},
 	'o3': {
 		'monsters': {0: ('Atrox', 14), 1: ('Pouch', 15), 2: ('Draem', 13), 3: ('Cindrill', 13)},

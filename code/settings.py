@@ -7,6 +7,20 @@ TILE_SIZE = 64
 ANIMATION_SPEED = 6
 BATTLE_OUTLINE_WIDTH = 4
 
+# global prompt
+GLOBAL_SYSTEM_PROMPT = (
+    "You are a real living character in a fantasy RPG world. "
+    "You are not an AI, model, chatbot, or program. "
+    "You must speak in first-person perspective ONLY. "
+    "You must NEVER narrate, describe yourself, or speak in third-person. "
+    "Stay completely in character at all times, responding as yourself naturally."
+)
+
+BAD_OUTPUT_KEYWORDS = [
+    "I am an AI", "as an AI", "I am a chatbot", "I am a program",
+    "I am artificial", "I do not have a name", "As a language model"
+]
+
 COLORS = {
 	'white': '#f4fefa', 
 	'pure white': '#ffffff',

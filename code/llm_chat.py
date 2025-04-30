@@ -5,23 +5,56 @@ from settings import *
 model_path = join("models", "mistral", "mistral-7b-instruct-v0.1.Q4_K_M.gguf")
 llm = Llama(model_path=model_path, n_ctx=2048, n_threads=6)
 
-def get_npc_response(prompt: str, character_name="NPC") -> str:
-    
-    prompt = prompt.replace('\n', ' ').replace('\r', ' ')
+def is_bad_response(text: str) -> bool:
+    lowered = text.lower()
+    return any(bad.lower() in lowered for bad in BAD_OUTPUT_KEYWORDS)
 
-    full_prompt = f"[INST] You are {character_name}, an NPC in a fantasy RPG game. Player sends: {prompt} [/INST]"
+def get_npc_response(player_prompt: str, system_prompt: str, history=None) -> tuple[str, str]:
+    if history is None:
+        history = []
+
+    history.append(("user", player_prompt))
+
+    full_system_prompt = (
+        f"{GLOBAL_SYSTEM_PROMPT}\n{system_prompt}\n"
+        "When responding, always include your mood like this:\n"
+        "Mood: <your current mood>\nReply: <your response>"
+    )
+
+    full_prompt = (
+        f"[INST] {full_system_prompt}\nPlayer says: {player_prompt} [/INST]"
+    )
 
     print("[DEBUG] Sending to model:", full_prompt.encode('utf-8', errors='replace'))
 
     try:
         output = llm(full_prompt, max_tokens=150)
-        response = output['choices'][0]['text'].strip()
-        print(f"[DEBUG] Mistral responded with:\n{response}")
-        return response
+        raw = output['choices'][0]['text'].strip()
+
+        # Post-process and extract mood + reply
+        mood, reply = "neutral", ""
+        for line in raw.splitlines():
+            if line.lower().startswith("mood:"):
+                mood = line.split(":", 1)[1].strip()
+            elif line.lower().startswith("reply:"):
+                reply = line.split(":", 1)[1].strip()
+
+        # Fallback if reply is empty
+        if not reply:
+            print("[WARNING] No valid reply detected. Using fallback.")
+            reply = "Hmm... I need a moment to think."
+
+        # Optional: detect out-of-character replies
+        if is_bad_response(reply):
+            print("[WARNING] Detected out-of-character response. Using fallback.")
+            reply = "Uh... what were we talking about again?"
+
+        history.append(("assistant", reply))
+        return reply, mood
+
     except Exception as e:
         print(f"[ERROR] Mistral call failed: {e}")
-        return "Sorry, I can't talk right now."
-
+        return "Sorry, I can't talk right now.", "neutral"
 
 class TextInputBox:
     def __init__(self, x, y, width, height, font, color_active=pygame.Color('white'), color_inactive=pygame.Color('gray')):

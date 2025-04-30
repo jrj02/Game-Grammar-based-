@@ -1,6 +1,8 @@
 from settings import *
 from pytmx.util_pygame import load_pygame
 from os.path import join
+import time
+import threading
 
 from sprite import *
 from entities import Player, Character
@@ -30,15 +32,15 @@ class Game:
         self.tint_mode = 'untint'
         self.tint_progress = 0
         self.tint_direction = -1
-        self.tint_speed = 600
-        
-        self.command_menu = None
-        self.command_target = None 
+        self.tint_speed = 600 
         
         # llm dialog
         self.text_input_box = None
         self.character_for_llm = None
         self.awaiting_llm_input = False
+        self.llm_thread = None
+        self.llm_result = None
+        self.awaiting_llm_output = False
         
         self.in_conversation = False
         
@@ -142,9 +144,10 @@ class Game:
                         self.player.block()
                         character.change_facing_direction(self.player.rect.center)
 
-                    
-                        self.command_menu = CommandMenu(100, 550, self.fonts['dialog'], ['Talk'])
-                        self.command_target = character
+                        self.in_conversation = True
+                        self.character_for_llm = character
+                        self.text_input_box = TextInputBox(100, 650, 1080, 40, self.fonts['dialog'])
+                        self.awaiting_llm_input = True
 
     def create_dialog(self, character):
         if not self.dialog_tree:
@@ -173,9 +176,16 @@ class Game:
         self.text_input_box = None
         self.player.block()
 
-        npc_name = self.character_for_llm.character_data.get("name", "NPC")
-        response = get_npc_response(text, character_name=npc_name)
+        # Prepare system prompt and history
+        npc_data = self.character_for_llm.character_data
+        npc_name = npc_data.get("name", "NPC")
+        base_prompt = npc_data.get("prompt", f"You are {npc_name}, an NPC in a fantasy RPG game.")
+        current_mood = getattr(self.character_for_llm, "mood", "neutral")  # use existing mood if present
 
+        system_prompt = f"{base_prompt}\nCurrent mood: {current_mood}"
+        history = self.character_for_llm.chat_history
+
+        # Show temporary "Thinking..." dialog
         self.dialog_tree = DialogTree(
             character=self.character_for_llm,
             player=self.player,
@@ -183,15 +193,40 @@ class Game:
             font=self.fonts['dialog'],
             end_dialog=self.no_op_end_dialog
         )
-        pages = self.dialog_tree.paginate_text(response)
-        self.dialog_tree.dialog = pages
+        self.dialog_tree.dialog = ["..."]
         self.dialog_tree.dialog_index = 0
-        self.dialog_tree.dialog_num = len(pages)
-
+        self.dialog_tree.dialog_num = 1
         self.dialog_tree.current_dialog = DialogSprite(
-            pages[0], self.character_for_llm, self.all_sprites, self.fonts['dialog']
+            "... Thinking", self.character_for_llm, self.all_sprites, self.fonts['dialog']
         )
-        
+
+        # Start background LLM call
+        def run_llm():
+            start_time = time.time()
+
+            # 🎯 Get both reply and inferred mood
+            reply, mood = get_npc_response(text, system_prompt=system_prompt, history=history)
+
+            # ⏱ Timing
+            end_time = time.time()
+            print(f"[DEBUG] Model responded in {end_time - start_time:.2f} seconds")
+            print(f"[DEBUG] Mood inferred: {mood}")
+
+            # 🧠 Update mood + memory
+            self.character_for_llm.mood = mood
+            self.character_for_llm.chat_history.append(f"Player said: {text}")
+            self.character_for_llm.chat_history.append(f"{npc_name} replied: {reply}")
+            self.character_for_llm.chat_history = self.character_for_llm.chat_history[-6:]
+
+            # 📨 Store response for processing in run()
+            self.llm_result = reply
+            self.llm_waiting = False
+
+        # 🔁 Start background thread
+        self.llm_thread = threading.Thread(target=run_llm)
+        self.llm_thread.start()
+        self.llm_waiting = True
+
     def no_op_end_dialog(self, character):
         pass
     
@@ -235,17 +270,6 @@ class Game:
                         skip_frame = True
                         continue
 
-                if self.command_menu:
-                    result = self.command_menu.handle_event(event)
-                    if result == "Talk":
-                        print("[DEBUG] Talk command selected")
-                        self.in_conversation = True
-                        self.command_menu = None
-                        self.character_for_llm = self.command_target
-                        self.text_input_box = TextInputBox(100, 650, 1080, 40, self.fonts['dialog'])
-                        self.awaiting_llm_input = True
-                    continue
-
                 if self.awaiting_llm_input and self.text_input_box:
                     result = self.text_input_box.handle_event(event)
                     if result is not None:
@@ -259,13 +283,27 @@ class Game:
             self.all_sprites.update(dt)
 
             self.all_sprites.draw(self.player)
-            if self.command_menu:
-                self.command_menu.draw(self.display_surface)
             if self.awaiting_llm_input and self.text_input_box:
                 self.text_input_box.draw(self.display_surface)
             if self.dialog_tree:
                 self.dialog_tree.update()
 
+            if self.awaiting_llm_output is False and self.llm_result is not None:
+                # Replace Thinking... with paginated response
+                pages = self.dialog_tree.paginate_text(self.llm_result)
+                self.dialog_tree.dialog = pages
+                self.dialog_tree.dialog_index = 0
+                self.dialog_tree.dialog_num = len(pages)
+
+                if self.dialog_tree.current_dialog:
+                    self.dialog_tree.current_dialog.kill()
+
+                self.dialog_tree.current_dialog = DialogSprite(
+                    pages[0], self.character_for_llm, self.all_sprites, self.fonts['dialog']
+                )
+
+                self.llm_result = None
+                
             self.tint_screen(dt)
             pygame.display.update()
 

@@ -62,6 +62,7 @@ class Character(Entity):
         self.player = player
         self.create_dialog = create_dialog
         self.collision_rects = [sprite.rect for sprite in collision_sprites if sprite != self]
+        self.chat_history = []
         
         # movement
         self.has_moved = False
