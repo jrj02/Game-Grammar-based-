@@ -11,8 +11,16 @@ class DialogTree:
         self.all_sprites = all_sprites
         self.end_dialog = end_dialog
 
+        # Check if the character is defeated and set the appropriate prompt
+        if self.character.character_data.get('defeated', False):
+            self.prompt = self.character.character_data.get('defeated_prompt', '')  # Use defeated prompt
+            print("[DEBUG] Using defeated prompt:", self.prompt)  # Debugging to confirm the prompt being used
+        else:
+            self.prompt = self.character.character_data.get('prompt', '')  # Use default prompt
+            print("[DEBUG] Using default prompt:", self.prompt)  # Debugging to confirm the prompt being used
+
         # Get dialog (could be empty if using LLM only)
-        raw_lines = character.get_dialog()  # should return a list or []
+        raw_lines = self.character.get_dialog()  # should return a list or []
         full_text = " ".join(raw_lines)
         self.dialog = self.paginate_text(full_text) if full_text else []
 
@@ -26,7 +34,7 @@ class DialogTree:
             self.end_dialog(self.character)  # Immediately end if no dialog
 
         self.dialog_timer = Timer(500, autostart=True)
-
+        
     def paginate_text(self, text, wrap_width=30, max_lines=3):
         import textwrap
         wrapped_lines = textwrap.wrap(text, width=wrap_width)
@@ -41,9 +49,9 @@ class DialogTree:
             return
 
         keys = pygame.key.get_just_pressed()
-
         if keys[pygame.K_ESCAPE] and not self.dialog_timer.active:
             print("[DEBUG] Conversation ended by player (ESC)")
+
             self.end_dialog(self.character)
             return
 
@@ -66,8 +74,15 @@ class DialogTree:
             else:
                 # End of dialog pages — back to input
                 print("[DEBUG] Dialog finished, returning to input")
-                self.player.game.text_input_box = TextInputBox(100, 650, 1080, 40, self.font)
+                self.player.game.text_input_box = TextInputBox(0, WINDOW_HEIGHT - 120, WINDOW_WIDTH, 120, self.player.game.fonts['dialog'], bg_color=pygame.Color('white'))
                 self.player.game.awaiting_llm_input = True
+
+                # After the Character finishes talking, check if the battle is queued
+                if self.player.game.queued_battle:
+                    print("[DEBUG] Battle queued, starting now.")
+                    self.player.game.queued_battle = False  # Reset the flag
+                    # Trigger the battle setup directly here
+                    self.player.game.trigger_battle_with_character(self.character)
 
     def update(self):
         self.dialog_timer.update()

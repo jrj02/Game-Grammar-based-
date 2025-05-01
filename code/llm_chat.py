@@ -1,13 +1,11 @@
-from llama_cpp import Llama
-from os.path import join
 from settings import *
+from os.path import join
+
+from llama_cpp import Llama
+from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 
 model_path = join("models", "mistral", "mistral-7b-instruct-v0.1.Q4_K_M.gguf")
 llm = Llama(model_path=model_path, n_ctx=2048, n_threads=6)
-
-def is_bad_response(text: str) -> bool:
-    lowered = text.lower()
-    return any(bad.lower() in lowered for bad in BAD_OUTPUT_KEYWORDS)
 
 def get_npc_response(player_prompt: str, system_prompt: str, history=None) -> tuple[str, str]:
     if history is None:
@@ -56,16 +54,32 @@ def get_npc_response(player_prompt: str, system_prompt: str, history=None) -> tu
         print(f"[ERROR] Mistral call failed: {e}")
         return "Sorry, I can't talk right now.", "neutral"
 
+def is_bad_response(text: str) -> bool:
+    lowered = text.lower()
+    return any(bad.lower() in lowered for bad in BAD_OUTPUT_KEYWORDS)
+
+def is_negative_sentiment(mood):
+        analyzer = SentimentIntensityAnalyzer()
+        
+        # Get the sentiment scores for the mood (NPC's response)
+        sentiment_score = analyzer.polarity_scores(mood)
+        
+        # If the compound score is negative, it's a negative sentiment
+        if sentiment_score['compound'] < -0.1:  # You can adjust the threshold if needed
+            return True
+        return False
+
 class TextInputBox:
-    def __init__(self, x, y, width, height, font, color_active=pygame.Color('white'), color_inactive=pygame.Color('gray')):
-        self.rect = pygame.Rect(x, y, width, height)
+    def __init__(self, x, y, width, height, font, color_active=pygame.Color('black'), color_inactive=pygame.Color('gray'), bg_color=pygame.Color('white')):
+        self.rect = pygame.Rect(x, y, width, height)  # Set position and size based on WINDOW_WIDTH and WINDOW_HEIGHT
         self.color_active = color_active
         self.color_inactive = color_inactive
-        self.color = self.color_active
+        self.color = self.color_active  # Text color
         self.text = ''
         self.font = font
         self.active = True
         self.done = False
+        self.bg_color = bg_color  # Background color for the box
 
     def handle_event(self, event):
         if event.type == pygame.MOUSEBUTTONDOWN:
@@ -85,8 +99,10 @@ class TextInputBox:
         return None
 
     def draw(self, surface):
+        pygame.draw.rect(surface, self.bg_color, self.rect)
+
         txt_surface = self.font.render(self.text, True, self.color)
-        width = max(200, txt_surface.get_width() + 10)
-        self.rect.w = width
         surface.blit(txt_surface, (self.rect.x + 5, self.rect.y + 5))
+
+
         pygame.draw.rect(surface, self.color, self.rect, 2)

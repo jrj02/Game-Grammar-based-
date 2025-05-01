@@ -1,5 +1,6 @@
 TRAINER_DATA = {
 	'o1': {
+		'name': 'Abdul',
 		'monsters': {0: ('Jacana', 14), 1: ('Cleaf', 15)},
 		'dialog': {
 			'default': ['Hey, how are you?', 'Oh, so you want to fight?', 'FIGHT!'], 
@@ -11,7 +12,8 @@ TRAINER_DATA = {
   		'prompt': "You are a timid, but helpful person who enjoys meeting new people. However, you can get hostile if someone starts saying hurtful things to you."
 		},
 	'o2': {
-		'monsters': {0: ('Atrox', 14), 1: ('Pouch', 15), 2: ('Draem', 13), 3: ('Cindrill', 13)},
+		'name' : 'Olivia',
+		'monsters': {0: ('Atrox', 14), 1: ('Pouch', 15), 2: ('Draem', 13)},
 		'dialog': {
 			# 'default': ['I don\'t like sand', 'It\'s coarse and rough', 'oh god, fight'], 
 			# 'defeated': ['May the force be with you']
@@ -20,7 +22,8 @@ TRAINER_DATA = {
 		'look_around': False,
 		'defeated': False,
 		'biome': 'sand',
-		'prompt': "You are an aggressive, no-nonsense desert warrior who dislikes small talk."
+		'prompt': "You are an aggressive, no-nonsense desert warrior who dislikes small talk.",
+		'defeated_prompt': "You are a timid push-over now. So much so that you get scared when talking"
 		},
 	'o3': {
 		'monsters': {0: ('Atrox', 14), 1: ('Pouch', 15), 2: ('Draem', 13), 3: ('Cindrill', 13)},
@@ -268,67 +271,67 @@ TRAINER_DATA = {
 MONSTER_DATA = {
 	'Plumette': {
 		'stats': {'element': 'plant', 'max_health': 15, 'max_energy': 17, 'attack': 4, 'defense': 8, 'recovery': 5, 'speed': 1},
-		'abilities': {0: 'scratch', 5: 'spark'},
+		'abilities': {1: 'scratch', 5: 'spark'},
 		'evolve': ('Ivieron', 15)},
 	'Ivieron': {
 		'stats': {'element': 'plant', 'max_health': 18, 'max_energy': 20, 'attack': 5, 'defense': 10, 'recovery': 6, 'speed': 1.2},
-		'abilities': {0: 'scratch', 5: 'spark'},
+		'abilities': {1: 'scratch', 5: 'spark', 10: 'Myriad Truths'},
 		'evolve': ('Pluma', 32)},
 	'Pluma': {
 		'stats': {'element': 'plant', 'max_health': 23, 'max_energy': 25, 'attack': 6, 'defense': 12, 'recovery': 7, 'speed': 1.8},
-		'abilities': {0: 'scratch', 5: 'spark'},
+		'abilities': {1: 'scratch', 5: 'spark', 10: 'Myriad Truths'},
 		'evolve': None},
 	'Sparchu': {
 		'stats': {'element': 'fire', 'max_health': 15, 'max_energy': 17, 'attack': 3, 'defense': 8, 'recovery': 5, 'speed': 1},
-		'abilities': {0: 'scratch', 5: 'spark'},
+		'abilities': {1: 'scratch', 5: 'spark'},
 		'evolve': ('Cindrill', 15)},
 	'Cindrill': {
 		'stats': {'element': 'fire', 'max_health': 18, 'max_energy': 20, 'attack': 4, 'defense': 10, 'recovery': 6, 'speed': 1.2},
-		'abilities': {0: 'scratch', 5: 'spark'},
+		'abilities': {1: 'scratch', 5: 'spark'},
 		'evolve': ('Charmadillo', 33)},
 	'Charmadillo': {
 		'stats': {'element': 'fire', 'max_health': 27, 'max_energy': 23, 'attack': 6, 'defense': 17, 'recovery': 7, 'speed': 1.5},
-		'abilities': {0: 'scratch', 5: 'fire', 10:'explosion', 12: 'battlecry', 20:'annihilate'},
+		'abilities': {1: 'scratch', 5: 'fire', 10:'explosion', 12: 'battlecry', 20:'annihilate'},
 		'evolve': None},
 	'Finsta': {
 		'stats': {'element': 'water', 'max_health': 13, 'max_energy': 17, 'attack': 2, 'defense': 8, 'recovery': 5, 'speed': 1.8},
-		'abilities': {0: 'scratch', 5: 'spark'},
+		'abilities': {1: 'scratch', 5: 'spark'},
 		'evolve': ('Gulfin', 34)},
 	'Gulfin': {
 		'stats': {'element': 'water', 'max_health': 18, 'max_energy': 20, 'attack': 3, 'defense': 10, 'recovery': 6, 'speed': 2},
-		'abilities': {0: 'scratch', 5: 'spark'},
+		'abilities': {1: 'scratch', 5: 'spark'},
 		'evolve': ('Finiette', 32)},
 	'Finiette': {
 		'stats': {'element': 'water', 'max_health': 27, 'max_energy': 23, 'attack': 4, 'defense': 17, 'recovery': 7, 'speed': 2.5},
-		'abilities': {0: 'scratch', 5: 'spark'},
+		'abilities': {1: 'scratch', 5: 'spark'},
 		'evolve': None},
 	'Atrox': {
 		'stats': {'element': 'fire', 'max_health': 18, 'max_energy': 20, 'attack': 3, 'defense': 10, 'recovery': 6, 'speed': 1.9},
-		'abilities': {0: 'scratch', 5: 'spark'},
+		'abilities': {1: 'scratch', 5: 'spark'},
 		'evolve': None},
 	'Pouch': {
 		'stats': {'element': 'plant', 'max_health': 23, 'max_energy': 25, 'attack': 4, 'defense': 12, 'recovery': 7, 'speed': 1.5},
-		'abilities': {0: 'scratch', 5: 'spark'},
+		'abilities': {1: 'scratch', 5: 'spark'},
 		'evolve': None},
 	'Draem': {
 		'stats': {'element': 'plant', 'max_health': 23, 'max_energy': 25, 'attack': 4, 'defense': 12, 'recovery': 7, 'speed': 1.4},
-		'abilities': {0: 'scratch', 5: 'spark'},
+		'abilities': {1: 'scratch', 5: 'spark'},
 		'evolve': None},
 	'Larvea': {
 		'stats': {'element': 'plant', 'max_health': 15, 'max_energy': 17, 'attack': 1, 'defense': 8, 'recovery': 5, 'speed': 1},
-		'abilities': {0: 'scratch', 5: 'spark'},
+		'abilities': {1: 'scratch', 5: 'spark'},
 		'evolve': ('Cleaf', 4)},
 	'Cleaf': {
 		'stats': {'element': 'plant', 'max_health': 18, 'max_energy': 20, 'attack': 3, 'defense': 10, 'recovery': 6, 'speed': 1.6},
-		'abilities': {0: 'scratch', 5: 'spark'},
+		'abilities': {1: 'scratch', 5: 'spark'},
 		'evolve': None},
 	'Jacana': {
 		'stats': {'element': 'fire', 'max_health': 12, 'max_energy': 19, 'attack': 3, 'defense': 10, 'recovery': 6, 'speed': 2.6},
-		'abilities': {0: 'scratch', 5: 'spark'},
+		'abilities': {1: 'scratch', 5: 'spark'},
 		'evolve': None},
 	'Friolera': {
 		'stats': {'element': 'water', 'max_health': 27, 'max_energy': 23, 'attack': 4, 'defense': 17, 'recovery': 7, 'speed': 2},
-		'abilities': {0: 'scratch', 5: 'spark', 15: 'splash', 20: 'ice', 25: 'heal'},
+		'abilities': {1: 'scratch', 5: 'spark', 15: 'splash', 20: 'ice', 25: 'heal'},
 		'evolve': None},
 }
 
@@ -343,4 +346,5 @@ ATTACK_DATA = {
 	'explosion':  {'target': 'opponent', 'amount': 2,    'cost': 90, 'element': 'fire',   'animation': 'explosion'},
 	'annihilate': {'target': 'opponent', 'amount': 2,    'cost': 15, 'element': 'fire',   'animation': 'explosion'},
 	'ice':        {'target': 'opponent', 'amount': 2,    'cost': 15, 'element': 'water',  'animation': 'ice'},
+	'Myriad Truths': {'target': 'all_opponents', 'amount': 50,    'cost': 15, 'element': 'almighty',  'animation': 'almighty'}
 }
