@@ -22,7 +22,7 @@ TRAINER_DATA = {
 		'look_around': False,
 		'defeated': False,
 		'biome': 'sand',
-		'prompt': "You are an aggressive, no-nonsense desert warrior who dislikes small talk.",
+		'prompt': "You are a noble dessert warrior who respects your self-honor",
 		'defeated_prompt': "You are a timid push-over now. So much so that you get scared when talking"
 		},
 	'o3': {
