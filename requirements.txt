@@ -3,3 +3,5 @@ llama_cpp_python
 vaderSentiment
 numpy
 torch
+pytmx
+nltk
