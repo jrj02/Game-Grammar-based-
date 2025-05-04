@@ -111,7 +111,7 @@ class Game:
         self.audio = audio_importer(join('audio'))
         
         for sound in self.audio.values():
-            sound.set_volume(0)
+            sound.set_volume(0.10)
         
     def setup(self, tmx_map, player_start_pos):
         
@@ -299,10 +299,6 @@ class Game:
         self.text_input_box = None
         self.player.block()
 
-        # Debugging to see if the defeated state is set correctly
-        print(f"[DEBUG] Before update: {self.character_for_llm.character_data['defeated']}")
-        print(f"[DEBUG] After update: {self.character_for_llm.character_data['defeated']}")
-
         # Prepare system prompt and history
         character_data = self.character_for_llm.character_data
         character_name = character_data.get("name", "Character")
@@ -318,7 +314,7 @@ class Game:
         current_mood = getattr(self.character_for_llm, "mood", "neutral")
 
         # Construct the full system prompt to send to Mistral
-        system_prompt = f"{base_prompt}\nCurrent mood: {current_mood}"
+        local_prompt = f"{base_prompt}\nCurrent mood: {current_mood}"
         history = self.character_for_llm.chat_history
 
         # Show temporary "Thinking..." dialog
@@ -336,17 +332,26 @@ class Game:
             "...", self.character_for_llm, self.all_sprites, self.fonts['dialog']
         )
 
-        # Start background LLM call
+        #Start background LLM call
         def run_llm():
             start_time = time.time()
 
             # Get both reply and inferred mood
-            reply, mood = get_npc_response(text, system_prompt=system_prompt, history=history)
+            reply, mood = get_npc_response(text, local_prompt=local_prompt, history=history)
 
             # Timing
             end_time = time.time()
             print(f"[DEBUG] Model responded in {end_time - start_time:.2f} seconds")
-            print(f"[DEBUG] Mood inferred: {mood}")
+            print(f"[DEBUG] Mood inferred: {mood}")  # Still useful for dialog, not for battle anymore
+
+            # Perform sentiment analysis on the reply FIRST (avoid recalculating it multiple times)
+            sentiment_score = analyzer.polarity_scores(reply)  # Use the pre-initialized analyzer
+            print(f"[DEBUG] Sentiment score for reply: {sentiment_score}")
+
+            # If the compound score is negative, trigger battle (before proceeding with the rest)
+            if sentiment_score['compound'] < -0.1 or sentiment_score['neg'] > 0.2 and self.in_conversation:
+                print(f"[DEBUG] Negative sentiment detected! Triggering battle.")
+                self.queued_battle = True  # Queue the battle
 
             # Update mood + memory
             self.character_for_llm.mood = mood
@@ -358,30 +363,36 @@ class Game:
             self.llm_result = reply
             self.llm_waiting = False
 
-            # **Check for empty or malformed response** before proceeding with perplexity evaluation
+            # **Check for empty or malformed response** before proceeding with evaluation
             if not reply or len(reply.strip()) == 0:
-                print("[DEBUG] Empty or malformed response detected. Skipping perplexity evaluation.")
+                print("[DEBUG] Empty or malformed response detected. Skipping evaluation.")
                 return
 
             print("[DEBUG] Model response:", reply)  # Print the model's response for debugging
 
-            # **Evaluate perplexity** for the last response
-            print("[DEBUG] Evaluating perplexity for the last response.")
-            player_input = text  # The player's prompt is the input to the model
-            npc_context = self.character_for_llm.character_data  # Pass the NPC's context (character data)
+            # **Evaluate both perplexity, BLEU, METEOR, Distinct** for the last response
             try:
-                evaluate_perplexity(reply, player_input, npc_context)  # Evaluate perplexity for the model response
+                # Perplexity evaluation
+                perplexity_score = evaluate_perplexity(reply, text, self.character_for_llm.character_data)
+
+                # BLEU evaluation
+                bleu_score = evaluate_bleu(text, reply)
+
+                # METEOR evaluation
+                meteor_score = evaluate_meteor(text, reply)
+
+                # Distinct evaluation
+                distinct_score = evaluate_distinct(reply, n=1)
+
             except Exception as e:
-                print(f"[ERROR] Error in perplexity evaluation: {e}")
-                print("[DEBUG] Skipping perplexity evaluation due to error.")
+                print(f"[ERROR] Error in evaluation: {e}")
+                print("[DEBUG] Skipping evaluation due to error.")
 
-            # Check if the mood is negative using sentiment analysis
-            print(f"[DEBUG] Character mood set to: {self.character_for_llm.mood}")
-            if is_negative_sentiment(self.character_for_llm.mood) and self.in_conversation:
-                print(f"[DEBUG] Character is Angry! Queuing battle.")
-                self.queued_battle = True  # Queue the battle
+            # After everything is set up, proceed with dialogue processing (do this after triggering battle)
+            self.llm_waiting = False
+        
 
-        # Start background thread for LLM response generation
+        #Start background thread for LLM response generation
         self.llm_thread = threading.Thread(target=run_llm)
         self.llm_thread.start()
         self.llm_waiting = True

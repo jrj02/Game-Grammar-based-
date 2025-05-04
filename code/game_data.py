@@ -9,7 +9,8 @@ TRAINER_DATA = {
 		'look_around': True,
 		'defeated': False,
 		'biome': 'forest',
-  		'prompt': "You are a timid, but helpful person who enjoys meeting new people. However, you can get hostile if someone starts saying hurtful things to you."
+  		'prompt': "You are a timid, but helpful person who enjoys meeting new people. However, you lose your temper if someone makes fun of your shirt",
+		'defeated_prompt': "You get angry at yourself for being bested in combat. You can never forgive yourself"
 		},
 	'o2': {
 		'name' : 'Olivia',
@@ -22,10 +23,11 @@ TRAINER_DATA = {
 		'look_around': False,
 		'defeated': False,
 		'biome': 'sand',
-		'prompt': "You are a noble dessert warrior who respects your self-honor",
+		'prompt': "You are a rude, no-nonsense warrior who doesnt tolerate disrespect. You get angry really fast" ,
 		'defeated_prompt': "You are a timid push-over now. So much so that you get scared when talking"
 		},
 	'o3': {
+		'name': 'Gerald',
 		'monsters': {0: ('Atrox', 14), 1: ('Pouch', 15), 2: ('Draem', 13), 3: ('Cindrill', 13)},
 		'dialog': {
 			'default': ['I love skating!', 'FIGHT!'], 
@@ -33,9 +35,12 @@ TRAINER_DATA = {
 		'directions': ['left', 'right', 'up', 'down'],
 		'look_around': True,
 		'defeated': False,
-		'biome': 'sand'
+		'biome': 'sand',
+		'prompt': "You are a timid, but helpful person who enjoys meeting new people. However, you lose your temper if someone makes fun of your shirt",
+		'defeated_prompt': "You get angry at yourself for being bested in combat. You can never forgive yourself"
 		},
 	'o4': {
+		'name': 'Gerald',
 		'monsters': {0: ('Friolera', 25), 1: ('Gulfin', 20), 2: ('Atrox',24), 3: ('Finiette', 30)},
 		'dialog': {
 			'default': ['I love skating!', 'FIGHT!'], 
@@ -43,9 +48,12 @@ TRAINER_DATA = {
 		'directions': ['right'],
 		'look_around': True,
 		'defeated': False,
-		'biome': 'forest'
+		'biome': 'forest',
+		'prompt': "You are a timid, but helpful person who enjoys meeting new people. However, you lose your temper if someone makes fun of your shirt",
+		'defeated_prompt': "You get angry at yourself for being bested in combat. You can never forgive yourself"
 		},
 	'o5': {
+		'name': 'Gerald',
 		'monsters': {0: ('Plumette', 20), 1: ('Ivieron', 22), 2: ('Atrox',24), 3: ('Pouch', 19)},
 		'dialog': {
 			'default': ['I love skating!', 'FIGHT!'], 
@@ -53,9 +61,12 @@ TRAINER_DATA = {
 		'directions': ['up', 'right'],
 		'look_around': True,
 		'defeated': False,
-		'biome': 'forest'
+		'biome': 'forest',
+		'prompt': "You are a timid, but helpful person who enjoys meeting new people. However, you lose your temper if someone makes fun of your shirt",
+		'defeated_prompt': "You get angry at yourself for being bested in combat. You can never forgive yourself"
 		},
 	'o6': {
+		'name': 'Gerald',
 		'monsters': {0: ('Finsta', 15), 1: ('Finsta', 15), 2: ('Finsta', 15)},
 		'dialog': {
 			'default': ['I love skating!', 'FIGHT!'], 
@@ -63,9 +74,12 @@ TRAINER_DATA = {
 		'directions': ['down'],
 		'look_around': False,
 		'defeated': False,
-		'biome': 'ice'
+		'biome': 'ice',
+		'prompt': "You are a timid, but helpful person who enjoys meeting new people. However, you lose your temper if someone makes fun of your shirt",
+		'defeated_prompt': "You get angry at yourself for being bested in combat. You can never forgive yourself"
 		},
 	'o7': {
+		'name': 'Gerald',
 		'monsters': {0: ('Friolera', 25), 1: ('Gulfin', 20), 2: ('Atrox',24), 3: ('Finiette', 30)},
 		'dialog': {
 			'default': ['There are no bugs in the snow!'], 
@@ -73,9 +87,12 @@ TRAINER_DATA = {
 		'directions': ['right'],
 		'look_around': False,
 		'defeated': False,
-		'biome': 'ice'
+		'biome': 'ice',
+		'prompt': "You are a timid, but helpful person who enjoys meeting new people. However, you lose your temper if someone makes fun of your shirt",
+		'defeated_prompt': "You get angry at yourself for being bested in combat. You can never forgive yourself"
 		},
 	'p1': {
+		'name': 'Gerald',
 		'monsters': {0: ('Friolera', 25), 1: ('Gulfin', 20), 2: ('Atrox',24), 3: ('Finiette', 30)},
 		'dialog': {
 			'default': ['I love trees', 'and fights'], 
@@ -83,9 +100,12 @@ TRAINER_DATA = {
 		'directions': ['right'],
 		'look_around': False,
 		'defeated': False,
-		'biome': 'forest'
+		'biome': 'forest',
+		'prompt': "You are a timid, but helpful person who enjoys meeting new people. However, you lose your temper if someone makes fun of your shirt",
+		'defeated_prompt': "You get angry at yourself for being bested in combat. You can never forgive yourself"
 		},
 	'p2': {
+		'name': 'Gerald',
 		'monsters': {0: ('Friolera', 25), 1: ('Gulfin', 20), 2: ('Atrox',24), 3: ('Finiette', 30)},
 		'dialog': {
 			'default': ['I love trees', 'and fights'], 
@@ -93,9 +113,12 @@ TRAINER_DATA = {
 		'directions': ['right'],
 		'look_around': False,
 		'defeated': False,
-		'biome': 'forest'
+		'biome': 'forest',
+		'prompt': "You are a timid, but helpful person who enjoys meeting new people. However, you lose your temper if someone makes fun of your shirt",
+		'defeated_prompt': "You get angry at yourself for being bested in combat. You can never forgive yourself"
 		},
 	'p3': {
+		'name': 'Gerald',
 		'monsters': {0: ('Friolera', 25), 1: ('Gulfin', 20), 2: ('Atrox',24), 3: ('Finiette', 30)},
 		'dialog': {
 			'default': ['I love trees', 'and fights'], 
@@ -103,9 +126,12 @@ TRAINER_DATA = {
 		'directions': ['right'],
 		'look_around': False,
 		'defeated': False,
-		'biome': 'forest'
+		'biome': 'forest',
+		'prompt': "You are a timid, but helpful person who enjoys meeting new people. However, you lose your temper if someone makes fun of your shirt",
+		'defeated_prompt': "You get angry at yourself for being bested in combat. You can never forgive yourself"
 		},
 	'p4': {
+		'name': 'Gerald',
 		'monsters': {0: ('Friolera', 25), 1: ('Gulfin', 20), 2: ('Atrox',24), 3: ('Finiette', 30)},
 		'dialog': {
 			'default': ['I love trees', 'and fights'], 
@@ -113,9 +139,12 @@ TRAINER_DATA = {
 		'directions': ['right'],
 		'look_around': False,
 		'defeated': False,
-		'biome': 'forest'
+		'biome': 'forest',
+		'prompt': "You are a timid, but helpful person who enjoys meeting new people. However, you lose your temper if someone makes fun of your shirt",
+		'defeated_prompt': "You get angry at yourself for being bested in combat. You can never forgive yourself"
 		},
 	'px': {
+		'name': 'Gerald',
 		'monsters': {0: ('Friolera', 25), 1: ('Gulfin', 20), 2: ('Atrox',24), 3: ('Finiette', 30)},
 		'dialog': {
 			'default': ['I love trees', 'and fights'], 
@@ -123,9 +152,12 @@ TRAINER_DATA = {
 		'directions': ['right'],
 		'look_around': False,
 		'defeated': False,
-		'biome': 'forest'
+		'biome': 'forest',
+		'prompt': "You are a timid, but helpful person who enjoys meeting new people. However, you lose your temper if someone makes fun of your shirt",
+		'defeated_prompt': "You get angry at yourself for being bested in combat. You can never forgive yourself"
 		},
 	'w1': {
+		'name': 'Gerald',
 		'monsters': {0: ('Friolera', 25), 1: ('Gulfin', 20), 2: ('Draem',24), 3: ('Finiette', 30)},
 		'dialog': {
 			'default': ['It\'s so cold in here', 'maybe a fight will warm me up'], 
@@ -133,9 +165,12 @@ TRAINER_DATA = {
 		'directions': ['left'],
 		'look_around': True,
 		'defeated': False,
-		'biome': 'ice'
+		'biome': 'ice',
+		'prompt': "You are a timid, but helpful person who enjoys meeting new people. However, you lose your temper if someone makes fun of your shirt",
+		'defeated_prompt': "You get angry at yourself for being bested in combat. You can never forgive yourself"
 		},
 	'w2': {
+		'name': 'Gerald',
 		'monsters': {0: ('Friolera', 25), 1: ('Gulfin', 20), 2: ('Draem',24), 3: ('Finiette', 30)},
 		'dialog': {
 			'default': ['It\'s so cold in here', 'maybe a fight will warm me up'], 
@@ -143,9 +178,12 @@ TRAINER_DATA = {
 		'directions': ['right'],
 		'look_around': True,
 		'defeated': False,
-		'biome': 'ice'
+		'biome': 'ice',
+		'prompt': "You are a timid, but helpful person who enjoys meeting new people. However, you lose your temper if someone makes fun of your shirt",
+		'defeated_prompt': "You get angry at yourself for being bested in combat. You can never forgive yourself"
 		},
 	'w3': {
+		'name': 'Gerald',
 		'monsters': {0: ('Friolera', 25), 1: ('Gulfin', 20), 2: ('Draem',24), 3: ('Finiette', 30)},
 		'dialog': {
 			'default': ['It\'s so cold in here', 'maybe a fight will warm me up'], 
@@ -153,9 +191,12 @@ TRAINER_DATA = {
 		'directions': ['left'],
 		'look_around': True,
 		'defeated': False,
-		'biome': 'ice'
+		'biome': 'ice',
+		'prompt': "You are a timid, but helpful person who enjoys meeting new people. However, you lose your temper if someone makes fun of your shirt",
+		'defeated_prompt': "You get angry at yourself for being bested in combat. You can never forgive yourself"
 		},
 	'w4': {
+		'name': 'Gerald',
 		'monsters': {0: ('Friolera', 25), 1: ('Gulfin', 20), 2: ('Draem',24), 3: ('Finiette', 30)},
 		'dialog': {
 			'default': ['It\'s so cold in here', 'maybe a fight will warm me up'], 
@@ -163,9 +204,12 @@ TRAINER_DATA = {
 		'directions': ['right'],
 		'look_around': True,
 		'defeated': False,
-		'biome': 'ice'
+		'biome': 'ice',
+		'prompt': "You are a timid, but helpful person who enjoys meeting new people. However, you lose your temper if someone makes fun of your shirt",
+		'defeated_prompt': "You get angry at yourself for being bested in combat. You can never forgive yourself"
 		},
 	'w5': {
+		'name': 'Gerald',
 		'monsters': {0: ('Friolera', 25), 1: ('Gulfin', 20), 2: ('Draem',24), 3: ('Finiette', 30)},
 		'dialog': {
 			'default': ['It\'s so cold in here', 'maybe a fight will warm me up'], 
@@ -173,9 +217,12 @@ TRAINER_DATA = {
 		'directions': ['left'],
 		'look_around': True,
 		'defeated': False,
-		'biome': 'ice'
+		'biome': 'ice',
+		'prompt': "You are a timid, but helpful person who enjoys meeting new people. However, you lose your temper if someone makes fun of your shirt",
+		'defeated_prompt': "You get angry at yourself for being bested in combat. You can never forgive yourself"
 		},
 	'wx': {
+		'name': 'Gerald',
 		'monsters': {0: ('Friolera', 25), 1: ('Gulfin', 20), 2: ('Draem',24), 3: ('Finiette', 30)},
 		'dialog': {
 			'default': ['This place feels kinda warm...', 'fight!'], 
@@ -183,9 +230,12 @@ TRAINER_DATA = {
 		'directions': ['down'],
 		'look_around': True,
 		'defeated': False,
-		'biome': 'ice'
+		'biome': 'ice',
+		'prompt': "You are a timid, but helpful person who enjoys meeting new people. However, you lose your temper if someone makes fun of your shirt",
+		'defeated_prompt': "You get angry at yourself for being bested in combat. You can never forgive yourself"
 		},
 	'f1': {
+		'name': 'Gerald',
 		'monsters': {0: ('Cindrill', 15), 1: ('Jacana', 20), 2: ('Draem',24), 3: ('Atrox', 30)},
 		'dialog': {
 			'default': ['This place feels kinda warm...', 'fight!'], 
@@ -193,9 +243,12 @@ TRAINER_DATA = {
 		'directions': ['right'],
 		'look_around': True,
 		'defeated': False,
-		'biome': 'sand'
+		'biome': 'sand',
+		'prompt': "You are a timid, but helpful person who enjoys meeting new people. However, you lose your temper if someone makes fun of your shirt",
+		'defeated_prompt': "You get angry at yourself for being bested in combat. You can never forgive yourself"
 		},
 	'f2': {
+		'name': 'Gerald',
 		'monsters': {0: ('Cindrill', 15), 1: ('Jacana', 20), 2: ('Draem',24), 3: ('Atrox', 30)},
 		'dialog': {
 			'default': ['This place feels kinda warm...', 'fight!'], 
@@ -203,9 +256,12 @@ TRAINER_DATA = {
 		'directions': ['right', 'left'],
 		'look_around': False,
 		'defeated': False,
-		'biome': 'sand'
+		'biome': 'sand',
+		'prompt': "You are a timid, but helpful person who enjoys meeting new people. However, you lose your temper if someone makes fun of your shirt",
+		'defeated_prompt': "You get angry at yourself for being bested in combat. You can never forgive yourself"
 		},
 	'f3': {
+		'name': 'Gerald',
 		'monsters': {0: ('Cindrill', 15), 1: ('Jacana', 20), 2: ('Draem',24), 3: ('Atrox', 30)},
 		'dialog': {
 			'default': ['This place feels kinda warm...', 'fight!'], 
@@ -213,9 +269,12 @@ TRAINER_DATA = {
 		'directions': ['right', 'left'],
 		'look_around': True,
 		'defeated': False,
-		'biome': 'sand'
+		'biome': 'sand',
+		'prompt': "You are a timid, but helpful person who enjoys meeting new people. However, you lose your temper if someone makes fun of your shirt",
+		'defeated_prompt': "You get angry at yourself for being bested in combat. You can never forgive yourself"
 		},
 	'f4': {
+		'name': 'Gerald',
 		'monsters': {0: ('Cindrill', 15), 1: ('Jacana', 20), 2: ('Draem',24), 3: ('Atrox', 30)},
 		'dialog': {
 			'default': ['This place feels kinda warm...', 'fight!'], 
@@ -223,9 +282,12 @@ TRAINER_DATA = {
 		'directions': ['up', 'right'],
 		'look_around': True,
 		'defeated': False,
-		'biome': 'sand'
+		'biome': 'sand',
+		'prompt': "You are a timid, but helpful person who enjoys meeting new people. However, you lose your temper if someone makes fun of your shirt",
+		'defeated_prompt': "You get angry at yourself for being bested in combat. You can never forgive yourself"
 		},
 	'f5': {
+		'name': 'Gerald',
 		'monsters': {0: ('Cindrill', 15), 1: ('Jacana', 20), 2: ('Draem',24), 3: ('Atrox', 30)},
 		'dialog': {
 			'default': ['This place feels kinda warm...', 'fight!'], 
@@ -233,9 +295,12 @@ TRAINER_DATA = {
 		'directions': ['left'],
 		'look_around': True,
 		'defeated': False,
-		'biome': 'sand'
+		'biome': 'sand',
+		'prompt': "You are a timid, but helpful person who enjoys meeting new people. However, you lose your temper if someone makes fun of your shirt",
+		'defeated_prompt': "You get angry at yourself for being bested in combat. You can never forgive yourself"
 		},
 	'f6': {
+		'name': 'Gerald',
 		'monsters': {0: ('Cindrill', 15), 1: ('Jacana', 20), 2: ('Draem',24), 3: ('Atrox', 30)},
 		'dialog': {
 			'default': ['This place feels kinda warm...', 'fight!'], 
@@ -243,9 +308,12 @@ TRAINER_DATA = {
 		'directions': ['right'],
 		'look_around': True,
 		'defeated': False,
-		'biome': 'sand'
+		'biome': 'sand',
+		'prompt': "You are a timid, but helpful person who enjoys meeting new people. However, you lose your temper if someone makes fun of your shirt",
+		'defeated_prompt': "You get angry at yourself for being bested in combat. You can never forgive yourself"
 		},
 	'fx': {
+		'name': 'Gerald',
 		'monsters': {0: ('Cindrill', 15), 1: ('Jacana', 20), 2: ('Draem',24), 3: ('Atrox', 30)},
 		'dialog': {
 			'default': ['Time to bring the heat', 'fight!'], 
@@ -253,7 +321,9 @@ TRAINER_DATA = {
 		'directions': ['down'],
 		'look_around': False,
 		'defeated': False,
-		'biome': 'sand'
+		'biome': 'sand',
+		'prompt': "You are a timid, but helpful person who enjoys meeting new people. However, you lose your temper if someone makes fun of your shirt",
+		'defeated_prompt': "You get angry at yourself for being bested in combat. You can never forgive yourself"
 		},
 	'Nurse': {
 		'direction': 'down',

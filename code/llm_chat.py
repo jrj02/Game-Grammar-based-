@@ -5,16 +5,17 @@ from llama_cpp import Llama
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 
 model_path = join("models", "mistral", "mistral-7b-instruct-v0.1.Q4_K_M.gguf")
-llm = Llama(model_path=model_path, n_ctx=2048, n_threads=6)
+llm = Llama(model_path=model_path, n_ctx=2048, n_threads=6, logits_all=True)
+analyzer = SentimentIntensityAnalyzer()
 
-def get_npc_response(player_prompt: str, system_prompt: str, history=None) -> tuple[str, str]:
+def get_npc_response(player_prompt: str, local_prompt: str, history=None) -> tuple[str, str]:
     if history is None:
         history = []
 
     history.append(("user", player_prompt))
 
     full_system_prompt = (
-        f"{GLOBAL_SYSTEM_PROMPT}\n{system_prompt}\n"
+        f"{GLOBAL_SYSTEM_PROMPT}\n{local_prompt}\n"
         "When responding, always include your mood like this:\n"
         "Mood: <your current mood>\nReply: <your response>"
     )
@@ -52,22 +53,24 @@ def get_npc_response(player_prompt: str, system_prompt: str, history=None) -> tu
 
     except Exception as e:
         print(f"[ERROR] Mistral call failed: {e}")
-        return "Sorry, I can't talk right now.", "neutral"
+        return "Sorry, I wasnt paying attention. Come again?", "neutral"
 
 def is_bad_response(text: str) -> bool:
     lowered = text.lower()
     return any(bad.lower() in lowered for bad in BAD_OUTPUT_KEYWORDS)
 
-def is_negative_sentiment(mood):
-        analyzer = SentimentIntensityAnalyzer()
-        
-        # Get the sentiment scores for the mood (NPC's response)
-        sentiment_score = analyzer.polarity_scores(mood)
-        
-        # If the compound score is negative, it's a negative sentiment
-        if sentiment_score['compound'] < -0.1:  # You can adjust the threshold if needed
-            return True
-        return False
+def analyze_sentiment(text: str) -> dict:
+    sentiment_score = analyzer.polarity_scores(text)
+    return sentiment_score
+
+def is_negative_sentiment(reply: str) -> bool:
+    sentiment_score = analyzer.polarity_scores(reply)  # Use the pre-initialized analyzer
+    print(f"[DEBUG] Sentiment score for reply: {sentiment_score}")
+
+    # Check if sentiment is negative based on compound score
+    if sentiment_score['compound'] < -0.1:
+        return True
+    return False
 
 class TextInputBox:
     def __init__(self, x, y, width, height, font, color_active=pygame.Color('black'), color_inactive=pygame.Color('gray'), bg_color=pygame.Color('white')):
